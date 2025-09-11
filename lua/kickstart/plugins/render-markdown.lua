@@ -25,7 +25,7 @@ return {
       },
       checkbox = {
         enabled = true,
-        render_modes = false,
+        render_modes = true,
         right_pad = 1,
         unchecked = {
           icon = '󰄱 ',

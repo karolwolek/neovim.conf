@@ -5,6 +5,7 @@ return {
   lazy = true,
   mappings = {},
   config = function()
+    -- INFO: I use config for dynamic obsidian todays note injection
     local function get_daily_note()
       local obClient = require('obsidian').get_client()
       return obClient:daily(0, { no_write = false, load = {
@@ -22,16 +23,6 @@ return {
       },
       mappings = {
         enabled = false,
-      },
-      integrations = {
-        -- @link https://github.com/nvim-neo-tree/neo-tree.nvim
-        NeoTree = {
-          -- The position of the tree.
-          ---@type "left"|"right"
-          position = 'left',
-          -- When `true`, if the tree was opened before enabling the plugin, we will reopen it.
-          reopen = true,
-        },
       },
       buffers = {
         setNames = false,

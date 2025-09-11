@@ -32,7 +32,7 @@ require 'options'
 -- [[ Basic Keymaps ]]
 require 'keymaps'
 
--- [[ Basic autocommands ]]
+-- [[ Basic autocommands]]
 require 'autocmds'
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -41,6 +41,8 @@ require 'lazy-bootstrap'
 -- [[ Configure and install plugins ]]
 require 'lazy-plugins'
 
+-- [[ custom config modules section]]
+require 'kickstart/my-terminal'
 vim.cmd 'echom ">^.^<"'
 
 -- vim: ts=2 sts=2 sw=2 et

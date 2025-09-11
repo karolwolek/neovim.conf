@@ -8,6 +8,7 @@ return {
         markdown = { 'markdownlint' },
         typescript = { 'eslint_d' },
         json = { 'jsonlint' },
+        python = { 'ruff' },
       }
 
       local markdownlint = lint.linters.markdownlint

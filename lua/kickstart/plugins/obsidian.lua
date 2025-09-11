@@ -1,3 +1,10 @@
+local vault = ''
+if not vim.fn.has_key(vim.fn.environ(), 'VAULT') then
+  vim.notify("There is no VAULT enviromental variable declared, can't process", vim.log.levels.ERROR)
+else
+  vault = vim.fn.environ()['VAULT']
+end
+
 return {
   {
     'obsidian-nvim/obsidian.nvim',
@@ -7,8 +14,8 @@ return {
 
     -- attach obsidian only when entering one of the vault's buffers
     event = {
-      'BufEnter ' .. vim.fn.expand '~' .. '/Documents/myvault/*.md',
-      'BufNewFile ' .. vim.fn.expand '~' .. '/Documents/myvault/*.md',
+      'BufEnter ' .. vault .. '*.md',
+      'BufNewFile ' .. vault .. '*.md',
     },
 
     -- attach obsidian on one of the commands call
@@ -18,7 +25,7 @@ return {
       workspaces = {
         {
           name = 'notes',
-          path = '/home/karolwolek/Documents/myvault',
+          path = vault,
         },
       },
       log_level = vim.log.levels.INFO,
@@ -106,6 +113,14 @@ return {
           action = require('kickstart.obutils').open_new_note,
           opts = { buffer = false, expr = false, noremap = true, desc = '[N]ote [N]ew' },
         },
+        ['<Right>'] = {
+          action = require('kickstart.obutils').next_daily,
+          opts = { buffer = false, expr = false, noremap = true, desc = 'Next daily' },
+        },
+        ['<Left>'] = {
+          action = require('kickstart.obutils').prev_daily,
+          opts = { buffer = false, expr = false, noremap = true, desc = 'Previous daily' },
+        },
         -- open links for this note
         ['<leader>nl'] = {
           action = function()
@@ -125,15 +140,10 @@ return {
           action = require('kickstart.obutils').accept_inbox_note,
           opts = { buffer = true, expr = false, noremap = true, desc = '[N]ote [A]ccept' },
         },
-        -- paste image without default name
+        -- paste image
         ['<M-p>'] = {
           action = require('kickstart.obutils').paste_image_custom,
           opts = { buffer = true, expr = false, noremap = true, desc = '[P]aste image without default' },
-        },
-        -- paste image with default name
-        ['<M-P>'] = {
-          action = require('kickstart.obutils').paste_image_default,
-          opts = { buffer = true, expr = false, noremap = true, desc = '[P]aste image with default name' },
         },
         -- open dailies with picker
         ['<leader>nd'] = {
@@ -242,7 +252,7 @@ return {
       -- a string with just the name to inject in the text with a pattern:
       -- [this is example](images/this-is-example-20250616145425.jpg)
       attachments = {
-        img_folder = '/home/karolwolek/Documents/myvault/images/',
+        img_folder = vault .. '/images',
         confirm_img_paste = false,
         img_text_func = function(client, path)
           local name = path.stem

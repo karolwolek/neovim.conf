@@ -1,16 +1,9 @@
 -- Clear highlights on search when pressing <Esc> in normal mode
---  it also is clearing the cmdline in windows with :echo command
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>:echo<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
---
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Disable arrow keys in normal mode
@@ -32,6 +25,12 @@ vim.keymap.set({ 'n', 'i' }, '<C-p>', '<ESC>ddkP', { noremap = true, desc = 'Mov
 -- lowercase/uppercase the word
 vim.keymap.set('n', '<S-u>', 'vawU', { noremap = true, desc = 'Convert a word to the uppercase' })
 vim.keymap.set('n', '<S-l>', 'vawu', { noremap = true, desc = 'convert a word to the lowercase' })
+
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, desc = 'Move half page down and center cursor' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, desc = 'Move half page up and center cursor' })
+
+-- my custom terminal conf
+vim.keymap.set('n', '<leader>tt', '<cmd>OpenTerminal<cr>', { desc = '[T]oggle [T]erminal' })
 
 -- INFO: no-neck-pain centering windows keymaps
 -- ============================================================================
@@ -127,77 +126,3 @@ vim.keymap.set('n', '<leader>sc', function()
   local builtin = require 'telescope.builtin'
   builtin.find_files { cwd = vim.fn.stdpath 'config' }
 end, { desc = '[S]earch [C]onfig files' })
-
--- [[ Basic Autocommands ]]
-
--- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
-vim.api.nvim_create_autocmd('TextYankPost', {
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('q-close-help', { clear = true }),
-  pattern = { 'help', 'man' },
-  desc = 'Use q to close the window',
-  command = 'nnoremap <buffer> q <cmd>quit<cr>',
-})
-
---[
--- This is my first plugin made with a TJ help
--- It's opening a terminal attached at the bottom with <leader>tt combination
---]
-
--- INFO: [[TERMINAL]] terminal opening helpers
-
-local term_buf = nil
-
-local open_terminal = function()
-  if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
-    local winid = vim.fn.bufwinid(term_buf)
-
-    if winid ~= -1 and vim.api.nvim_win_is_valid(winid) then
-      local winnum = vim.fn.bufwinnr(term_buf)
-      vim.cmd(string.format('%dwincmd w', winnum))
-    else
-      -- buffer hidden reopen in bottom split
-      -- botright opens bottom split, sbuffer open buffer in split
-      vim.cmd('botright sbuffer' .. term_buf)
-    end
-  else
-    -- create a new terminal
-    vim.cmd [[
-      botright new
-      term
-    ]]
-    term_buf = vim.api.nvim_get_current_buf()
-  end
-
-  vim.api.nvim_win_set_height(0, 15)
-end
-
--- INFO: [[TERMINAL]] keymaps and auto-commands
-
-vim.api.nvim_create_augroup('custom-term-open', { clear = true })
-
-vim.api.nvim_create_autocmd('TermOpen', {
-  group = 'custom-term-open',
-  callback = function()
-    vim.opt.number = false
-    vim.opt.relativenumber = false
-    vim.cmd 'startinsert'
-  end,
-  desc = 'Disable numbers in terminal',
-})
-
-vim.api.nvim_create_autocmd('TermOpen', {
-  group = 'custom-term-open',
-  desc = 'Close terminal with q',
-  command = 'map <buffer> q <cmd>quit<cr>',
-})
-
-vim.keymap.set('n', '<leader>tt', open_terminal, { desc = '[T]oggle [T]erminal' })

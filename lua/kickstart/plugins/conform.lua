@@ -1,7 +1,5 @@
--- [[ Setup for auto formatting ]]
-
 return {
-  { -- Autoformat
+  {
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
@@ -35,7 +33,7 @@ return {
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        python = { 'black', 'isort', stop_after_first = true },
+        python = { 'ruff', 'black', 'isort', stop_after_first = false },
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
         markdown = { 'prettierd', 'prettier', stop_after_first = true },

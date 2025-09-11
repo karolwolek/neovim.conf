@@ -8,7 +8,7 @@ return {
       require('tokyonight').setup {
         transparent = false,
         styles = {
-          comments = { italic = true }, -- Disable italics in comments
+          comments = { italic = true },
         },
       }
 

@@ -1,14 +1,19 @@
+-- numbering
 vim.opt.number = true
 vim.opt.relativenumber = true
+
+-- allow for mouse usage
 vim.opt.mouse = 'a'
+
+-- disable mode showcase since it is shown on the status line
 vim.opt.showmode = false
 
+-- schedule the clipboard attaching (it slows down startup time)
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 
 -- Diagnostic Config
--- See :help vim.diagnostic.Opts
 vim.diagnostic.config {
   severity_sort = true,
   float = { border = 'rounded', source = 'if_many' },
