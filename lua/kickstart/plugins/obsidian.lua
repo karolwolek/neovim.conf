@@ -31,7 +31,7 @@ return {
         blink = true,
         min_chars = 2,
         match_case = false,
-        create_new = true,
+        create_new = false,
       },
       -- [[ configure daily notes with default template ]]
       daily_notes = {
@@ -90,14 +90,6 @@ return {
       end,
 
       --
-      -- [[ UI ]]
-      --
-      -- Disable the obsidian UI because of the incompatibility
-      -- with render-markdown plugin
-      ui = {
-        enable = false,
-      },
-      --
       -- [[ attachments ]]
       --
       -- Set default images folder,
@@ -105,7 +97,6 @@ return {
       -- that properly renames the file to attach timestamps and prepares
       -- a string with just the name to inject in the text with a pattern:
       -- [this is example](images/this-is-example-20250616145425.jpg)
-
       attachments = {
         img_folder = 'images',
         confirm_img_paste = true,
@@ -294,6 +285,15 @@ return {
           -- Tag highlighting
           vim.cmd 'highlight clear myTag'
         end,
+      },
+
+      --
+      -- [[ UI ]]
+      --
+      -- Disable the obsidian UI because of the incompatibility
+      -- with render-markdown plugin
+      ui = {
+        enable = false,
       },
     },
   },

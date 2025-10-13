@@ -32,10 +32,6 @@ return {
     --- @module 'blink.cmp'
     --- @type blink.cmp.Config
     opts = {
-      keymap = {
-        preset = 'default',
-      },
-
       appearance = {
         -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- Adjusts spacing to ensure icons are aligned
@@ -79,7 +75,7 @@ return {
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer', 'omni' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
         },
@@ -93,6 +89,5 @@ return {
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true, window = { border = 'rounded' } },
     },
-    opts_extend = { 'sources.default' },
   },
 }
