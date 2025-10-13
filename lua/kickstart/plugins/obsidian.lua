@@ -1,6 +1,7 @@
 local vault = ''
-if not vim.fn.has_key(vim.fn.environ(), 'VAULT') then
-  vim.notify("There is no VAULT enviromental variable declared, can't process", vim.log.levels.ERROR)
+if vim.fn.has_key(vim.fn.environ(), 'VAULT') == nil then
+  -- vim.notify("There is no VAULT enviromental variable declared, can't process", vim.log.levels.ERROR)
+  throw "There is no VAULT enviromental variable declared, can't process"
 else
   vault = vim.fn.environ()['VAULT']
 end
@@ -10,7 +11,7 @@ return {
     'obsidian-nvim/obsidian.nvim',
 
     -- TODO: track release for resolved issues with folds etc.
-    tag = 'v3.11.0',
+    -- tag = 'v3.11.0',
 
     -- attach obsidian only when entering one of the vault's buffers
     event = {
@@ -189,7 +190,7 @@ return {
 
       -- [[links customization]]
       wiki_link_func = 'prepend_note_path', -- meaning e.g. '[[foo-bar.md|Foo Bar]]'
-      preferred_link_style = 'markdown', -- Either 'wiki' or 'markdown'.
+      preferred_link_style = 'wiki', -- Either 'wiki' or 'markdown'.
 
       -- [[ open links in firefox ]]
       follow_url_func = function(url)
