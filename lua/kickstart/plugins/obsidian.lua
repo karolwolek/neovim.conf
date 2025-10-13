@@ -9,19 +9,12 @@ end
 return {
   {
     'obsidian-nvim/obsidian.nvim',
-
-    -- TODO: track release for resolved issues with folds etc.
-    -- tag = 'v3.11.0',
-
-    -- attach obsidian only when entering one of the vault's buffers
+    version = '*',
     event = {
       'BufEnter ' .. vault .. '*.md',
       'BufNewFile ' .. vault .. '*.md',
     },
-
-    -- attach obsidian on one of the commands call
     cmd = 'Obsidian',
-
     opts = {
       workspaces = {
         {
@@ -30,18 +23,9 @@ return {
         },
       },
       log_level = vim.log.levels.INFO,
-
-      -- [[ new notes location; inbox system ]]
       notes_subdir = 'inbox/',
       new_notes_location = 'notes_subdir',
-
-      -- [[ my custom field for trash]]
-      --
-      -- The reason for this is to have some place to put discarded note into
-      -- rather than deleting it. It's a safety feature for unwanted actions.
       trash_dir = '.trash',
-
-      -- [[ use blink and fire it immediately ]]
       completion = {
         blink = true,
         nvim_cmp = false,
@@ -272,11 +256,7 @@ return {
         end,
       },
 
-      -- [[ status line integration ]]
-      --
-      -- This custom status line gets transferred to mini.statusline
-      -- and is handled there accordingly.
-      statusline = {
+      footer = {
         enabled = true,
         format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars',
       },
