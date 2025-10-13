@@ -41,6 +41,12 @@ vim.diagnostic.config {
   },
 }
 
+-- folds
+vim.o.foldmethod = 'expr' -- Define folds using an expression
+vim.o.foldlevel = 99 -- Open all folds by default upon opening a file
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- Use Treesitter for folding
+vim.opt.foldtext = '' -- Syntax highlight first line of fold
+
 -- for markdown ui options
 vim.opt.conceallevel = 2
 
