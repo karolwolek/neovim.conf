@@ -13,3 +13,25 @@ vim.api.nvim_create_autocmd('FileType', {
   desc = 'Use q to close the window',
   command = 'nnoremap <buffer> q <cmd>quit<cr>',
 })
+
+-- markdown scrolloff
+
+local md_scrolloff_group = vim.api.nvim_create_augroup('markdown-autoscroll', { clear = true })
+local options_scrolloff = vim.opt.scrolloff -- ensure options gets loaded first
+
+vim.api.nvim_create_autocmd('BufEnter', {
+  group = md_scrolloff_group,
+  pattern = { '*.md' },
+  desc = 'Change autoscroll to always be in the middle while opening markdown file',
+  callback = function()
+    vim.opt.scrolloff = 25 -- big number to center
+  end,
+})
+vim.api.nvim_create_autocmd('BufLeave', {
+  group = md_scrolloff_group,
+  pattern = { '*.md' },
+  desc = 'Bring back the regular scrolloff',
+  callback = function()
+    vim.opt.scrolloff = options_scrolloff
+  end,
+})
