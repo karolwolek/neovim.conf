@@ -15,9 +15,6 @@ return {
       end
       local buff_filename = vim.api.nvim_buf_get_name(0):gsub('%.', '_')
       local scratch_path = Path:new(scratch, buff_filename)
-      -- if not scratch_path:parent():is_dir() then
-      --   scratch_path:parent():mkdir { parents = true }
-      -- end
       return scratch_path.filename .. '.md'
     end
     -- global width

@@ -14,6 +14,10 @@ require('lazy').setup({
 
   require 'kickstart/plugins/lazydev',
 
+  require 'kickstart/plugins/mason',
+
+  require 'kickstart/plugins/roslyn',
+
   require 'kickstart/plugins/gitsigns',
 
   require 'kickstart/plugins/which-key',

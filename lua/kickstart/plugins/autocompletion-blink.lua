@@ -33,7 +33,6 @@ return {
       },
 
       completion = {
-        -- menu = { border = 'rounded' },
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 500,
@@ -50,13 +49,6 @@ return {
         },
         list = {
           selection = {
-            -- [[
-            -- It works well without this line,
-            -- there are issues only if it is inserting automatically stuff
-            -- ]]
-            -- preselect = function(_)
-            --   return vim.bo.filetype ~= 'markdown'
-            -- end,
             auto_insert = function(_)
               return vim.bo.filetype ~= 'markdown'
             end,

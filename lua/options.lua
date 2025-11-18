@@ -2,6 +2,9 @@
 vim.opt.number = true
 vim.opt.relativenumber = true
 
+--windows default borders
+vim.o.winborder = 'rounded'
+
 -- allow for mouse usage
 vim.opt.mouse = 'a'
 

@@ -48,3 +48,15 @@ vim.api.nvim_create_autocmd('FileType', {
     opt.foldtext = '' -- Syntax highlight first line of fold
   end,
 })
+
+-- Create a parent directories if they don't exist
+vim.api.nvim_create_autocmd({ 'BufWritePre', 'FileWritePre' }, {
+  pattern = '*',
+  callback = function(event)
+    local file = event.match
+    if not file:match '://' then
+      local dir = vim.fn.expand '<afile>:p:h'
+      vim.fn.mkdir(dir, 'p')
+    end
+  end,
+})

@@ -42,6 +42,8 @@ return {
         arduino = { 'clang_format' },
         c = { 'clang_format' },
         cpp = { 'clang_format' },
+        cs = { 'csharpier' },
+        csproj = { 'csharpier' },
       },
     },
   },

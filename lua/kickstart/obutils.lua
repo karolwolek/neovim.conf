@@ -1,56 +1,59 @@
 local M = {}
+local Api = require 'obsidian.api'
+local Path = require 'obsidian.path'
+local Note = require 'obsidian.note'
+local Img = require 'obsidian.img_paste'
+local Log = require 'obsidian.log'
 
 M.search_inbox = function()
   -- function redefinition for recursion
   -- after deleting the function is called again for refresh
-  local function search_inbox()
-    local client = require('obsidian').get_client()
-    local picker = assert(client:picker())
-    picker:find_files {
-      prompt_title = 'Notes in the inbox',
-      dir = vim.fn.environ()['VAULT'] .. 'inbox',
-      -- TODO: refactor for multiple selection
-      selection_mappings = {
-        ['<C-d>'] = {
-          callback = function(note_or_path)
-            ---@type obsidian.Note
-            local note = require 'obsidian.note'
-            if note.is_note_obj(note_or_path) then
-              note = note
-            else
-              note = note.from_file(note_or_path)
-            end
+  local picker = assert(Obsidian.picker)
 
-            local config_trash = client.opts.trash_dir -- config injected (trash_dir)
-            local target_dir = client.current_workspace.path:joinpath(config_trash)
-            if not target_dir then
-              target_dir = client.current_workspace.path:joinpath '.trash'
-            end
-            if not target_dir:is_dir() then
-              target_dir:mkdir()
-            end
+  ---@param note_fpath string full file path to note
+  local function move_note_to_trash(note_fpath)
+    local workspace_path = Obsidian.workspace.path.filename
+    local trash_dir = Obsidian._opts.trash_dir or '.trash'
+    local target_dir = vim.fs.joinpath(workspace_path, trash_dir)
 
-            local target_path = target_dir:joinpath(note.path.name)
+    if vim.fn.isdirectory(target_dir) == 0 then
+      vim.fn.mkdir(target_dir)
+    end
 
-            local success, err = pcall(function()
-              os.rename(note.path.filename, target_path.filename)
-            end)
+    local filename = Path.new(note_fpath).is_absolute() and vim.fs.basename(note_fpath) or note_fpath
+    local target_path = vim.fs.joinpath(target_dir, filename)
 
-            if success then
-              print('Note moved to: ' .. target_path.filename)
-              search_inbox()
-            else
-              print('Error moving note: ' .. (err or 'Unknown error'))
-            end
-          end,
-          desc = 'Discard note',
-          keep_open = true,
-          allow_multiple = false,
-        },
-      },
-    }
+    local ok, err = pcall(function()
+      os.rename(note_fpath, target_path)
+    end)
+
+    if ok then
+      print('Note moved to: ' .. target_path)
+      M.search_inbox() -- refresh picker
+    else
+      print('Error moving note: ' .. (err or 'Unknown error'))
+    end
   end
-  search_inbox()
+
+  picker.find_files {
+    prompt_title = 'Notes in the inbox',
+    dir = vim.fn.environ()['VAULT'] .. 'inbox',
+    selection_mappings = {
+      ['<C-d>'] = {
+        desc = 'Discard note',
+        keep_open = true,
+        allow_multiple = false,
+        callback = function(entry)
+          local note_fpath = assert(type(entry) == 'string' and entry or entry.filename)
+          if not Api.path_is_note(note_fpath) then
+            print('Path is not in the workspace: ' .. note_fpath)
+            return
+          end
+          move_note_to_trash(note_fpath)
+        end,
+      },
+    },
+  }
 end
 
 ---This function checks only if the formats of two dates is equal
@@ -81,19 +84,18 @@ M.navigate_daily = function(prev)
   -- unix posix utils for c
   local time = require 'posix.time'
 
-  local client = require('obsidian').get_client()
   prev = prev or false
 
-  local note = client:current_note()
+  local note = Api.current_note()
 
   if note == nil then
     print "You don't have a note opened"
     return
   end
 
-  local dailies_title_format = client.opts.daily_notes.date_format
+  local dailies_title_format = Obsidian.opts.daily_notes.date_format
   if not dailies_title_format then
-    dailies_title_format = client._default_opts.daily_notes.date_format
+    dailies_title_format = require('obsidian.config.default').daily_notes.date_format
   end
   local id = note.path.stem
 
@@ -130,14 +132,14 @@ M.navigate_daily = function(prev)
       note_timestamp = note_timestamp - (24 * 60 * 60)
     end
 
-    path = client:daily_note_path(note_timestamp).filename
+    path = require('obsidian.daily').daily_note_path(note_timestamp).filename
   end
 
   if note_timestamp < bottom_limit_timestamp or note_timestamp > upper_limit_timestamp then
     return
   end
 
-  client:open_note(path)
+  Api.open_note(path)
 end
 
 M.prev_daily = function()
@@ -208,17 +210,15 @@ M.open_new_note = function()
 end
 
 M.accept_inbox_note = function()
-  local client = require('obsidian').get_client()
-  local bufer = vim.api.nvim_get_current_buf()
-  local note = client:current_note(bufer)
+  local note = Api.current_note()
 
   if not note then
     print 'There are currently no notes open'
     return
   end
 
-  local notes_subdir = client.opts.notes_subdir
-  local expected_path = client.current_workspace.path:joinpath(notes_subdir):joinpath(note.path.name)
+  local notes_subdir = Obsidian.opts.notes_subdir
+  local expected_path = Path.new(vim.fs.joinpath(Obsidian.workspace.path.filename, notes_subdir, note.path.name))
 
   if note.path ~= expected_path then
     print 'Not in the inbox'
@@ -232,14 +232,15 @@ M.accept_inbox_note = function()
 
   local target_tag = note.tags[1]
   local target_name = note.path.name:gsub('inbox', '')
-  local target_path = client.current_workspace.path:joinpath 'notes'
+  -- local target_path = client.current_workspace.path:joinpath 'notes'
+  local target_file_path = vim.fs.joinpath(Obsidian.workspace.path.filename, 'notes')
 
   if target_tag:find '^projects' then
-    target_path = target_path:joinpath('projects', target_name)
+    target_file_path = vim.fs.joinpath(target_file_path, 'projects', target_name)
   elseif target_tag:find '^areas' then
-    target_path = target_path:joinpath('areas', target_name)
+    target_file_path = vim.fs.joinpath(target_file_path, 'areas', target_name)
   elseif target_tag:find '^resources' then
-    target_path = target_path:joinpath('resources', target_name)
+    target_file_path = vim.fs.joinpath(target_file_path, 'resources', target_name)
   elseif target_tag:match '^archives' then
     print 'Cannot accept into archive'
     return
@@ -249,38 +250,53 @@ M.accept_inbox_note = function()
   end
 
   -- Ensure the target directory exists
-  local target_dir = target_path:parent()
+  local target_dir = Path.new(target_file_path):parent()
   if not target_dir then
     print 'Error with resolving target directory'
     return
   end
 
-  if not vim.fn.isdirectory(target_dir.filename) then
-    vim.fn.mkdir(target_dir.filename, 'p')
+  if not target_dir:is_dir() then
+    target_dir:mkdir { parents = true }
   end
 
   -- try to move the file
   local success, err = pcall(function()
-    os.rename(note.path.filename, target_path.filename)
+    os.rename(note.path.filename, target_file_path)
   end)
 
   if success then
-    vim.api.nvim_buf_delete(bufer, { force = true })
-    print('Note moved to: ' .. target_path.filename)
-    client:open_note(target_path.filename)
+    vim.api.nvim_buf_delete(0, { force = true })
+    print('Note moved to: ' .. target_file_path)
+    Api.open_note(target_file_path)
   else
-    print('Error moving note: ' .. (err or 'Unknown error'))
+    Log.err('Error moving note: ' .. (err or 'Unknown error'))
   end
 end
 
+-- TODO: Popraw działanie visual selection
+--
 -- paste image with name prompt
--- TODO: try to use popup under the cursor
 M.paste_image_custom = function()
-  local client = require('obsidian').get_client()
-  client.opts.attachments.img_name_func = nil
-  local success, err = pcall(vim.cmd, 'Obsidian paste_img')
+  if not Img.clipboard_is_img() then
+    return Log.err 'There is no image data in the clipboard'
+  end
+
+  local command = 'Obsidian paste_img'
+  local selection = Api.get_visual_selection { strict = true }
+  if selection then
+    vim.cmd 'normal! gv'
+    vim.cmd 'normal! d'
+    command = command .. ' ' .. selection.selection
+  end
+
+  ---@diagnostic disable-next-line
+  local success, result = pcall(vim.cmd, command)
   if not success then
-    print 'There is not image in the clipboard'
+    Log.err('there was an Error pasting the image on my side \n', result)
+    if selection then
+      vim.cmd('normal! i' .. vim.trim(selection.selection))
+    end
   end
 end
 

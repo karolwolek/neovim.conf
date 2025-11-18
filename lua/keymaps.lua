@@ -95,6 +95,10 @@ vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-=>', function()
   pcall(vim.cmd, 'NoNeckPainWidthUp')
 end, { desc = 'Increase window size', silent = true, noremap = true })
 -- ============================================
+vim.keymap.set('n', '<leader>ts', function()
+  ---@diagnostic disable-next-line: param-type-mismatch
+  pcall(vim.cmd, 'NoNeckPainScratchPad')
+end, { desc = '[T]oggle [S]hratchpad', silent = true, noremap = true })
 
 -- NOTE: TELESCOPE
 -- ============================================================================
@@ -122,3 +126,81 @@ vim.keymap.set('n', '<leader>sc', function()
   local builtin = require 'telescope.builtin'
   builtin.find_files { cwd = vim.fn.stdpath 'config' }
 end, { desc = '[S]earch [C]onfig files' })
+
+-- NOTE: OBSIDIAN
+-- ============================================================================
+
+local obsidian_group = vim.api.nvim_create_augroup('obsidian-base', { clear = true })
+
+vim.api.nvim_create_autocmd('User', {
+  group = obsidian_group,
+  pattern = 'ObsidianNoteEnter',
+  callback = function(event)
+    -- Toggle check-boxes.
+    vim.keymap.set('n', '<leader>ch', '<cmd>Obsidian toggle_checkbox<cr>', {
+      buffer = event.buf,
+      desc = 'Toggle check-box',
+    })
+    -- Smart action depending on context, either follow link or toggle checkbox.
+    vim.keymap.set('n', '<cr>', function()
+      return require('obsidian').util.smart_action()
+    end, {
+      buffer = event.buf,
+      desc = 'Obsidian smart action',
+    })
+    -- paste image
+    vim.keymap.set({ 'n', 'i', 'v' }, '<M-p>', function()
+      return require('kickstart.obutils').paste_image_custom()
+    end, {
+      buffer = event.buf,
+      desc = '[P]aste image',
+    })
+    -- open links for this note
+    vim.keymap.set('n', '<leader>nl', '<cmd>Obsidian links<cr>', { buffer = event.buf, desc = '[N]ote [L]inks' })
+    -- open backlinks for this note
+    vim.keymap.set('n', '<leader>nb', '<cmd>Obsidian backlinks<cr>', { buffer = event.buf, desc = '[N]ote [B]acklinks' })
+  end,
+})
+
+vim.api.nvim_create_autocmd('User', {
+  group = obsidian_group,
+  pattern = { 'ObsidianNoteEnter', '*/dailies/*.md' },
+  callback = function(event)
+    vim.keymap.set('n', '<Right>', function()
+      return require('kickstart.obutils').next_daily()
+    end, { buffer = event.buf, desc = 'Previous daily' })
+    vim.keymap.set('n', '<Left>', function()
+      return require('kickstart.obutils').prev_daily()
+    end, { buffer = event.buf, desc = 'Next daily' })
+  end,
+})
+
+vim.api.nvim_create_autocmd('User', {
+  group = obsidian_group,
+  pattern = { 'ObsidianNoteEnter', '*/inbox/*.md' },
+  callback = function(event)
+    -- accept the note from the inbox
+    vim.keymap.set('n', '<leader>na', function()
+      return require('kickstart.obutils').accept_inbox_note()
+    end, { buffer = event.buf, desc = '[N]ote [A]cceept' })
+  end,
+})
+
+-- search for tags in current vault
+vim.keymap.set('n', '<leader>st', '<cmd>Obsidian tags<cr>', { desc = '[S]earch [T]ags' })
+-- search for notes in current vault
+vim.keymap.set('n', '<leader>sn', '<cmd>Obsidian quick_switch<cr>', { desc = '[S]earch [N]otes' })
+-- open dailies with picker
+vim.keymap.set('n', '<leader>nd', '<cmd>Obsidian dailies<cr>', { desc = '[N]ote [D]ailies' })
+-- open yesterdays note
+vim.keymap.set('n', '<leader>ny', '<cmd>Obsidian yesterday<cr>', { desc = '[N]ote [Y]esterday' })
+-- open todays note
+vim.keymap.set('n', '<leader>nt', '<cmd>Obsidian today<cr>', { desc = '[N]ote [T]oday' })
+-- search for notes in the inbox
+vim.keymap.set('n', '<leader>si', function()
+  return require('kickstart.obutils').search_inbox()
+end, { desc = '[S]earch [I]nbox notes' })
+-- open a new note
+vim.keymap.set('n', '<leader>nn', function()
+  return require('kickstart.obutils').open_new_note()
+end, { desc = '[N]ote [N]ew' })

@@ -99,7 +99,7 @@ return {
       -- [this is example](images/this-is-example-20250616145425.jpg)
       attachments = {
         img_folder = 'images',
-        confirm_img_paste = true,
+        confirm_img_paste = false,
         img_text_func = function(path)
           local name = path.stem
           local parent = path:parent().filename
@@ -114,13 +114,8 @@ return {
           local normalized_path = vim.fs.relpath(Obsidian.dir.filename, target_path)
           return string.format('![%s](%s)', name, normalized_path)
         end,
-        -- image_text_func = function(path)
-        --   local name = vim.fs.basename(tostring(path))
-        --   local encoded_name = require('obsidian.util').urlencode(name)
-        --   return string.format('![%s](%s)', name, encoded_name)
-        -- end,
         img_name_func = function()
-          return '' -- force me to create a name
+          return nil -- force me to create a name
         end,
       },
 
@@ -128,114 +123,7 @@ return {
         enabled = true,
         format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars',
       },
-      --
-      --   -- [[ mappings ]]
-      --   --
-      --   -- Some mappings get attached to a certain buffer,
-      --   -- some mappings are using my custom obutils for several note taking system parts.
-      --   --
-      --   -- The reason they are defined here is that obsidian
-      --   -- is managing autocmds with buffer attached mappings itself
-      --   -- so i don't need to deal with checking whether the buffer
-      --   -- is a part of the workspace or not
-      --   mappings = {
-      --     -- Toggle check-boxes.
-      --     ['<leader>ch'] = {
-      --       action = function()
-      --         return require('obsidian').util.toggle_checkbox()
-      --       end,
-      --       opts = { buffer = true, desc = 'Toggle check-box' },
-      --     },
-      --     -- Smart action depending on context, either follow link or toggle checkbox.
-      --     ['<cr>'] = {
-      --       action = function()
-      --         return require('obsidian').util.smart_action()
-      --       end,
-      --       opts = { buffer = true, expr = true, desc = 'Obsidian smart action' },
-      --     },
-      --     -- search for tags in current vault
-      --     ['<leader>st'] = {
-      --       action = function()
-      --         return '<cmd>Obsidian tags<CR>'
-      --       end,
-      --       opts = { buffer = false, expr = true, noremap = true, desc = '[S]earch [T]ags' },
-      --     },
-      --     -- search for notes in current vault
-      --     ['<leader>sn'] = {
-      --       action = function()
-      --         return '<cmd>Obsidian quick_switch<CR>'
-      --       end,
-      --       opts = { buffer = false, expr = true, noremap = true, desc = '[S]earch [N]otes' },
-      --     },
-      --     -- search for notes in the inbox
-      --     ['<leader>si'] = {
-      --       action = require('kickstart.obutils').search_inbox,
-      --       opts = { buffer = false, expr = false, noremap = true, desc = '[S]earch [I]nbox notes' },
-      --     },
-      --     -- open a new note
-      --     ['<leader>nn'] = {
-      --       action = require('kickstart.obutils').open_new_note,
-      --       opts = { buffer = false, expr = false, noremap = true, desc = '[N]ote [N]ew' },
-      --     },
-      --     ['<Right>'] = {
-      --       action = require('kickstart.obutils').next_daily,
-      --       opts = { buffer = false, expr = false, noremap = true, desc = 'Next daily' },
-      --     },
-      --     ['<Left>'] = {
-      --       action = require('kickstart.obutils').prev_daily,
-      --       opts = { buffer = false, expr = false, noremap = true, desc = 'Previous daily' },
-      --     },
-      --     -- open links for this note
-      --     ['<leader>nl'] = {
-      --       action = function()
-      --         return '<cmd>Obsidian links<cr>'
-      --       end,
-      --       opts = { buffer = true, expr = true, noremap = true, desc = '[N]ote [L]inks' },
-      --     },
-      --     -- open backlinks for this note
-      --     ['<leader>nb'] = {
-      --       action = function()
-      --         return '<cmd>Obsidian backlinks<cr>'
-      --       end,
-      --       opts = { buffer = true, expr = true, noremap = true, desc = '[N]ote [B]acklinks' },
-      --     },
-      --     -- accept the note from the inbox
-      --     ['<leader>na'] = {
-      --       action = require('kickstart.obutils').accept_inbox_note,
-      --       opts = { buffer = true, expr = false, noremap = true, desc = '[N]ote [A]ccept' },
-      --     },
-      --     -- paste image
-      --     ['<M-p>'] = {
-      --       action = require('kickstart.obutils').paste_image_custom,
-      --       opts = { buffer = true, expr = false, noremap = true, desc = '[P]aste image without default' },
-      --     },
-      --     -- open dailies with picker
-      --     ['<leader>nd'] = {
-      --       action = function()
-      --         return '<cmd>Obsidian dailies<cr>'
-      --       end,
-      --       opts = { buffer = false, expr = true, noremap = true, desc = '[N]ote [D]ailes' },
-      --     },
-      --     -- open yesterdays note
-      --     ['<leader>ny'] = {
-      --       action = function()
-      --         return '<cmd>Obsidian yesterday<cr>'
-      --       end,
-      --       opts = { buffer = false, expr = true, noremap = true, desc = '[N]ote [Y]esterday' },
-      --     },
-      --     -- open todays note
-      --     ['<leader>nt'] = {
-      --       action = function()
-      --         return '<cmd>Obsidian today<cr>'
-      --       end,
-      --       opts = { buffer = false, expr = true, noremap = true, desc = '[N]ote [T]oday' },
-      --     },
-      --   },
-      --
 
-      --
-      --
-      --
       -- [[ callbacks]]
       --
       -- Various actions for scripting during obsidian lifecycle.
