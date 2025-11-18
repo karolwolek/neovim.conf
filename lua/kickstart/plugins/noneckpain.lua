@@ -5,12 +5,20 @@ return {
   lazy = true,
   mappings = {},
   config = function()
-    -- INFO: I use config for dynamic obsidian todays note injection
-    local function get_daily_note()
-      local obClient = require('obsidian').get_client()
-      return obClient:daily(0, { no_write = false, load = {
-        load_contents = false,
-      } }).path.filename
+    local function get_scratch_pad()
+      local Path = require 'plenary.path'
+      local scratch = ''
+      if vim.fn.has_key(vim.fn.environ(), 'SCRATCH') == nil then
+        throw "There is no SCRATCH enviromental variable declared, can't process"
+      else
+        scratch = vim.fn.environ()['SCRATCH']
+      end
+      local buff_filename = vim.api.nvim_buf_get_name(0):gsub('%.', '_')
+      local scratch_path = Path:new(scratch, buff_filename)
+      -- if not scratch_path:parent():is_dir() then
+      --   scratch_path:parent():mkdir { parents = true }
+      -- end
+      return scratch_path.filename .. '.md'
     end
     -- global width
     vim.g.nnwidth = 100
@@ -28,14 +36,21 @@ return {
         setNames = false,
         scratchPad = {
           enabled = false,
-          pathToFile = get_daily_note(),
+          pathToFile = get_scratch_pad(),
         },
         bo = {
-          filetype = 'md',
+          filetype = 'markdown',
         },
         right = {
           enabled = false,
         },
+      },
+      NeoTree = {
+        -- The position of the tree.
+        ---@type "left"|"right"
+        position = 'left',
+        -- When `true`, if the tree was opened before enabling the plugin, we will reopen it.
+        reopen = true,
       },
     }
   end,

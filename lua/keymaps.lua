@@ -95,10 +95,6 @@ vim.keymap.set({ 'n', 'i', 'v', 't' }, '<M-=>', function()
   pcall(vim.cmd, 'NoNeckPainWidthUp')
 end, { desc = 'Increase window size', silent = true, noremap = true })
 -- ============================================
-vim.keymap.set('n', '<leader>ts', function()
-  ---@diagnostic disable-next-line: param-type-mismatch
-  pcall(vim.cmd, 'NoNeckPainScratchPad')
-end, { desc = "[T]oggle [S]hratchpad with today's note", silent = true, noremap = true })
 
 -- NOTE: TELESCOPE
 -- ============================================================================

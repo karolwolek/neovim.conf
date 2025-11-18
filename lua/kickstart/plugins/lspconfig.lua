@@ -102,7 +102,6 @@ return {
         automatic_enable = {
           exclude = { 'ruff' },
         },
-        ensure_installed = {},
       }
     end,
   },

@@ -2,6 +2,14 @@ require('lazy').setup({
 
   'tpope/vim-sleuth',
 
+  {
+    'mattn/emmet-vim',
+    init = function()
+      vim.g.user_emmet_leader_key = '<C-x>'
+      vim.g.user_emmet_mode = 'a'
+    end,
+  },
+
   { 'nvim-lua/plenary.nvim', lazy = true },
 
   require 'kickstart/plugins/lazydev',
