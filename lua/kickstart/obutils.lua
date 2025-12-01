@@ -20,7 +20,7 @@ M.search_inbox = function()
       vim.fn.mkdir(target_dir)
     end
 
-    local filename = Path.new(note_fpath).is_absolute() and vim.fs.basename(note_fpath) or note_fpath
+    local filename = Path.new(note_fpath):is_absolute() and vim.fs.basename(note_fpath) or note_fpath
     local target_path = vim.fs.joinpath(target_dir, filename)
 
     local ok, err = pcall(function()
@@ -197,7 +197,7 @@ M.open_new_note = function()
     vim.api.nvim_win_close(win, true)
     vim.api.nvim_buf_delete(buf, { force = true })
 
-    vim.cmd { cmd = 'ObsidianNew', args = { title } }
+    vim.cmd { cmd = 'Obsidian', args = { 'new', title } }
     vim.cmd 'stopinsert'
   end, { buffer = buf, noremap = true, silent = true })
 
