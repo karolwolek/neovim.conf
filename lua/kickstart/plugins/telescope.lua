@@ -4,6 +4,7 @@ return {
     cmd = 'Telescope',
     tag = '0.1.8',
     lazy = true,
+    event = 'BufNew', -- Loads after the ui is entered so it is delayed, but can be used immediately
     dependencies = {
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
@@ -30,8 +31,10 @@ return {
           },
           ['fzf'] = {},
         },
+        defaults = {
+          file_ignore_patterns = { '%__virtual.cs$' },
+        },
       }
-
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
     end,

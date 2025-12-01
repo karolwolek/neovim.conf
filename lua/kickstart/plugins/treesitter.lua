@@ -31,6 +31,7 @@ return {
           'typst',
           'vue',
           'c_sharp',
+          'razor',
         },
         auto_install = true,
         highlight = {

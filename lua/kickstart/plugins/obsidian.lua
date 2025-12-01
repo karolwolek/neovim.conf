@@ -16,6 +16,7 @@ return {
     },
     cmd = 'Obsidian',
     opts = {
+      legacy_commands = false,
       workspaces = {
         {
           name = 'notes',
@@ -33,6 +34,7 @@ return {
         match_case = false,
         create_new = false,
       },
+
       -- [[ configure daily notes with default template ]]
       daily_notes = {
         folder = 'notes/dailies',
