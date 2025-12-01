@@ -28,7 +28,7 @@ require('lazy').setup({
 
   require 'kickstart/plugins/conform',
 
-  require 'kickstart/plugins/tokyonight',
+  require 'kickstart/plugins/colorscheme',
 
   require 'kickstart/plugins/todo-comments',
 
