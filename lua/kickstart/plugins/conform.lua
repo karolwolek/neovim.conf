@@ -44,6 +44,7 @@ return {
         cpp = { 'clang_format' },
         cs = { 'csharpier', 'clang_format', stop_after_first = true },
         csproj = { 'csharpier', 'clang_format', stop_after_first = true },
+        sh = { 'beautysh' },
       },
     },
   },
