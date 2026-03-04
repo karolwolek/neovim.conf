@@ -100,6 +100,7 @@ return {
       }
       require('mason-lspconfig').setup {
         automatic_enable = {
+          -- TODO: why ?
           exclude = { 'ruff' },
         },
       }

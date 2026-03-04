@@ -278,7 +278,7 @@ end
 --
 -- paste image with name prompt
 M.paste_image_custom = function()
-  if not Img.clipboard_is_img() then
+  if Img.get_clipboard_img_type() == nil then
     return Log.err 'There is no image data in the clipboard'
   end
 

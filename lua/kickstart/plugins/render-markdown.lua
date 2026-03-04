@@ -21,8 +21,11 @@ return {
           end,
         },
       },
+      dash = { width = 80 },
       heading = {
         icons = { '󰎤 ', '󰎧 ', '󰎪 ', '󰎭 ', '󰎱 ', '󰎳 ' },
+        width = 'block',
+        min_width = 80,
       },
       checkbox = {
         enabled = true,
@@ -45,6 +48,7 @@ return {
         },
       },
       code = {
+        position = 'right',
         width = 'block',
         min_width = 80,
       },

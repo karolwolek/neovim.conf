@@ -43,6 +43,8 @@ return {
         indent = { enable = true, disable = { 'ruby' } },
       }
     end,
+
+    vim.treesitter.language.register('c_sharp', 'cs'),
   },
 }
 

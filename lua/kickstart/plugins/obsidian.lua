@@ -9,7 +9,8 @@ end
 return {
   {
     'obsidian-nvim/obsidian.nvim',
-    version = '*',
+    -- version = '*',
+    branch = 'main',
     event = {
       'BufEnter ' .. vault .. '*.md',
       'BufNewFile ' .. vault .. '*.md',
@@ -27,6 +28,7 @@ return {
       notes_subdir = 'inbox/',
       new_notes_location = 'notes_subdir',
       trash_dir = '.trash',
+
       completion = {
         nvim_cmp = false,
         blink = true,
@@ -99,23 +101,41 @@ return {
       -- that properly renames the file to attach timestamps and prepares
       -- a string with just the name to inject in the text with a pattern:
       -- [this is example](images/this-is-example-20250616145425.jpg)
+      ---@class obsidian.config.AttachmentsOpts
+      ---
+      ---Default folder to save images to, relative to the vault root (/) or current dir (.), see https://github.com/obsidian-nvim/obsidian.nvim/wiki/Images#change-image-save-location
+      ---@field folder? string
+      ---
+      ---Default name for pasted images
+      ---@field img_name_func? fun(): string
+      ---
+      ---Default text to insert for pasted images
+      ---@field img_text_func? fun(path: obsidian.Path): string
+      ---
+      ---Whether to confirm the paste or not. Defaults to true.
+      ---@field confirm_img_paste? boolean
       attachments = {
-        img_folder = 'images',
+        folder = 'images',
         confirm_img_paste = false,
         img_text_func = function(path)
           local name = path.stem
+          local filename = name .. os.date '-%Y%m%d%H%M%S' .. path.suffix
+          filename = string.gsub(filename, ' ', '-')
           local parent = path:parent().filename
-          local filename = vim.fs.joinpath(parent, name .. os.date '-%Y%m%d%H%M%S' .. path.suffix)
-          local target_path = string.gsub(filename, ' ', '-')
+          local target_path = vim.fs.joinpath(parent, filename)
           local success, err = pcall(function()
             os.rename(path.filename, target_path)
           end)
           if not success then
             print(err)
           end
-          local normalized_path = vim.fs.relpath(Obsidian.dir.filename, target_path)
-          return string.format('![%s](%s)', name, normalized_path)
+          return string.format('![%s](%s)', name, filename)
         end,
+        -- img_text_func = function(path)
+        --   local name = vim.fs.basename(tostring(path))
+        --   local encoded_name = require('obsidian.util').urlencode(name)
+        --   return string.format('![%s](%s)', name, encoded_name)
+        -- end,
         img_name_func = function()
           return nil -- force me to create a name
         end,
@@ -123,6 +143,12 @@ return {
 
       footer = {
         enabled = true,
+        separator = true,
+        format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars',
+      },
+      statusline = {
+        enabled = true,
+        separator = true,
         format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars',
       },
 
@@ -158,20 +184,21 @@ return {
       ---@field post_set_workspace? fun(workspace: obsidian.Workspace)
       callbacks = {
         enter_note = function(_)
-          -- image snacks
-          require('snacks.image').config.resolve = function(_, src)
-            local workspace_path = Obsidian.workspace.path
-            return vim.fs.joinpath(workspace_path.filename, src)
-          end
+          -- -- image snacks
+          -- require('snacks.image').config.resolve = function(_, src)
+          --   local workspace_path = Obsidian.workspace.path
+          --   return vim.fs.joinpath(workspace_path.filename, src)
+          -- end
+
           -- Tag highlighting
-          vim.cmd 'highlight myTag guifg=#71d4eb'
+          vim.cmd 'highlight myTag guifg=#71d4eb gui=bold'
           vim.cmd 'match myTag /#[0-9]*[a-zA-Z_\\-\\/][a-zA-Z_\\-\\/0-9]*/'
         end,
         leave_note = function(_)
-          -- image snacks
-          vim.schedule(function()
-            require('snacks.image').config.resolve = nil
-          end)
+          -- -- image snacks
+          -- vim.schedule(function()
+          --   require('snacks.image').config.resolve = nil
+          -- end)
           -- Tag highlighting
           vim.cmd 'highlight clear myTag'
         end,

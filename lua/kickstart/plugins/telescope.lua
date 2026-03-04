@@ -2,7 +2,7 @@ return {
   {
     'nvim-telescope/telescope.nvim',
     cmd = 'Telescope',
-    tag = '0.1.8',
+    version = '*',
     lazy = true,
     event = 'BufNew', -- Loads after the ui is entered so it is delayed, but can be used immediately
     dependencies = {

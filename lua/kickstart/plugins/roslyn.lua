@@ -18,7 +18,6 @@ return {
     ft = { 'cs', 'razor' },
     config = function()
       local dotnet = require 'easy-dotnet'
-      -- Options are not required
       dotnet.setup {
         lsp = {
           enabled = false, -- Enable builtin roslyn lsp
@@ -27,6 +26,13 @@ return {
           config = {},
         },
       }
+    end,
+  },
+  {
+    'mattn/emmet-vim',
+    init = function()
+      vim.g.user_emmet_leader_key = '<C-x>'
+      vim.g.user_emmet_mode = 'a'
     end,
   },
 }

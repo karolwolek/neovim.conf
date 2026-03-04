@@ -32,6 +32,9 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, desc = 'Move half page
 -- my custom terminal conf
 vim.keymap.set('n', '<leader>tt', '<cmd>OpenTerminal<cr>', { desc = '[T]oggle [T]erminal' })
 
+-- micropython
+-- vim.keymap.set('n', '<leader>mr', require('kickstart.plugins.micropython').run)
+
 -- INFO: no-neck-pain centering windows keymaps
 -- ============================================================================
 vim.keymap.set('n', '<leader>cc', function()
@@ -141,14 +144,6 @@ vim.api.nvim_create_autocmd('User', {
       buffer = event.buf,
       desc = 'Toggle check-box',
     })
-    -- Smart action depending on context, either follow link or toggle checkbox.
-    vim.keymap.set('n', '<cr>', function()
-      return require('obsidian').util.smart_action()
-    end, {
-      buffer = event.buf,
-      desc = 'Obsidian smart action',
-    })
-    -- paste image
     vim.keymap.set({ 'n', 'i', 'v' }, '<M-p>', function()
       return require('kickstart.obutils').paste_image_custom()
     end, {
