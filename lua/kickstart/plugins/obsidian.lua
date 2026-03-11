@@ -84,14 +84,14 @@ return {
       preferred_link_style = 'wiki',
 
       -- [[ open links in firefox ]]
-      follow_url_func = function(url)
-        vim.ui.open(url, { cmd = { 'firefox' } })
-      end,
+      -- follow_url_func = function(url)
+      --   vim.ui.open(url, { cmd = { 'firefox' } })
+      -- end,
 
       -- [[ open images as a regular buffer ]]
-      follow_img_func = function(img)
-        vim.cmd { cmd = 'edit', args = { img } }
-      end,
+      -- follow_img_func = function(img)
+      --   vim.cmd { cmd = 'edit', args = { img } }
+      -- end,
 
       --
       -- [[ attachments ]]
@@ -143,14 +143,15 @@ return {
 
       footer = {
         enabled = true,
-        separator = true,
+        separator = '',
         format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars',
       },
-      statusline = {
-        enabled = true,
-        separator = true,
-        format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars',
-      },
+      -- backwards incompatibility
+      -- statusline = {
+      --   enabled = true,
+      --   separator = true,
+      --   format = '{{backlinks}} backlinks  {{properties}} properties  {{words}} words  {{chars}} chars',
+      -- },
 
       -- [[ callbacks]]
       --
