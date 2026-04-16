@@ -81,8 +81,6 @@ return {
         return tostring(os.date '%Y-%m-%d') .. '_' .. suffix
       end,
 
-      preferred_link_style = 'wiki',
-
       -- [[ open links in firefox ]]
       -- follow_url_func = function(url)
       --   vim.ui.open(url, { cmd = { 'firefox' } })
