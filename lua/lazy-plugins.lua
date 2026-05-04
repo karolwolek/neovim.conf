@@ -40,6 +40,8 @@ require('lazy').setup({
 
   require 'kickstart/plugins/obsidian',
 
+  require 'kickstart/plugins/scala-metals',
+
   require 'kickstart/plugins/bullets',
 
   require 'kickstart/plugins/noneckpain',
