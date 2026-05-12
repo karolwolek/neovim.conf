@@ -217,48 +217,20 @@ M.accept_inbox_note = function()
     return
   end
 
-  local notes_subdir = Obsidian.opts.notes_subdir
-  local expected_path = Path.new(vim.fs.joinpath(Obsidian.workspace.path.filename, notes_subdir, note.path.name))
-
-  if note.path ~= expected_path then
-    print 'Not in the inbox'
-    return
-  end
-
   if not note.tags or #note.tags == 0 then
     print 'No tags found'
     return
   end
 
-  local target_tag = note.tags[1]
-  local target_name = note.path.name:gsub('inbox', '')
-  -- local target_path = client.current_workspace.path:joinpath 'notes'
-  local target_file_path = vim.fs.joinpath(Obsidian.workspace.path.filename, 'notes')
+  local workspace_path = Api.resolve_workspace_dir()
+  local target_directory = vim.fs.joinpath(workspace_path.filename, 'notes')
 
-  if target_tag:find '^projects' then
-    target_file_path = vim.fs.joinpath(target_file_path, 'projects', target_name)
-  elseif target_tag:find '^areas' then
-    target_file_path = vim.fs.joinpath(target_file_path, 'areas', target_name)
-  elseif target_tag:find '^resources' then
-    target_file_path = vim.fs.joinpath(target_file_path, 'resources', target_name)
-  elseif target_tag:match '^archives' then
-    print 'Cannot accept into archive'
-    return
-  else
-    print 'Please attach a base tag out of "projects", "areas", "resources" as a first tag'
+  if not vim.fn.isdirectory(target_directory) then
+    print 'There is no notes folder in workspace'
     return
   end
 
-  -- Ensure the target directory exists
-  local target_dir = Path.new(target_file_path):parent()
-  if not target_dir then
-    print 'Error with resolving target directory'
-    return
-  end
-
-  if not target_dir:is_dir() then
-    target_dir:mkdir { parents = true }
-  end
+  local target_file_path = vim.fs.joinpath(target_directory, note.path.name)
 
   -- try to move the file
   local success, err = pcall(function()
