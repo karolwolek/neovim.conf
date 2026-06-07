@@ -30,8 +30,8 @@ return {
       trash_dir = '.trash',
 
       completion = {
-        nvim_cmp = false,
-        blink = true,
+        -- nvim_cmp = false,
+        -- blink = true,
         min_chars = 2,
         match_case = false,
         create_new = false,
