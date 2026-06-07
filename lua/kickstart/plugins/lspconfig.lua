@@ -100,7 +100,7 @@ return {
       }
       require('mason-lspconfig').setup {
         automatic_enable = {
-          exclude = { 'ruff', 'metals' },
+          exclude = { 'ruff', 'metals', 'dartls' },
         },
       }
     end,

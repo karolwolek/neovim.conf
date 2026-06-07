@@ -47,6 +47,7 @@ return {
         csproj = { 'csharpier', 'clang_format', stop_after_first = true },
         sh = { 'beautysh' },
         sql = { 'sleek' },
+        dart = { 'dcm' },
       },
     },
   },

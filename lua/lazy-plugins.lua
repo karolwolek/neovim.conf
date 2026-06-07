@@ -6,6 +6,8 @@ require('lazy').setup({
 
   require 'kickstart/plugins/micropython',
 
+  require 'kickstart/plugins/flutter-tools',
+
   require 'kickstart/plugins/fff',
 
   require 'kickstart/plugins/lazydev',
