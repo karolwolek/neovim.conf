@@ -9,8 +9,7 @@ end
 return {
   {
     'obsidian-nvim/obsidian.nvim',
-    -- version = '*',
-    branch = 'main',
+    version = '*',
     event = {
       'BufEnter ' .. vault .. '*.md',
       'BufNewFile ' .. vault .. '*.md',
@@ -35,6 +34,10 @@ return {
         min_chars = 2,
         match_case = false,
         create_new = false,
+      },
+
+      note = {
+        template = 'default.md',
       },
 
       -- [[ configure daily notes with default template ]]

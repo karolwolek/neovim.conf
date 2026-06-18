@@ -1,50 +1,76 @@
 return {
   {
     'nvim-treesitter/nvim-treesitter',
-    event = { 'BufReadPost', 'BufNewFile', 'BufWritePre' },
     build = ':TSUpdate',
+    branch = 'main', -- this is the key part
+    lazy = false,
     config = function()
-      local configs = require 'nvim-treesitter.configs'
-
-      configs.setup {
-        ensure_installed = {
-          'bash',
-          'c',
-          'python',
-          'javascript',
-          'typescript',
-          'diff',
-          'html',
-          'lua',
-          'luadoc',
-          'query',
-          'vim',
-          'vimdoc',
-          'markdown',
-          'markdown_inline',
-          'css',
-          'latex',
-          'norg',
-          'scss',
-          'svelte',
-          'tsx',
-          'typst',
-          'vue',
-          'c_sharp',
-        },
-        auto_install = true,
-        highlight = {
-          enable = true,
-          -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-          --  If you are experiencing weird indenting issues, add the language to
-          --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-          additional_vim_regex_highlighting = { 'ruby' },
-        },
-        indent = { enable = true, disable = { 'ruby' } },
+      require('nvim-treesitter').install {
+        'bash',
+        'c',
+        'python',
+        'javascript',
+        'typescript',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'query',
+        'vim',
+        'vimdoc',
+        'markdown',
+        'markdown_inline',
+        'css',
+        'latex',
+        'scss',
+        'svelte',
+        'tsx',
+        'typst',
+        'vue',
+        'c_sharp',
       }
     end,
-
-    vim.treesitter.language.register('c_sharp', 'cs'),
+    --   local configs = require 'nvim-treesitter.configs'
+    --
+    --   configs.setup {
+    --     ensure_installed = {
+    --       'bash',
+    --       'c',
+    --       'python',
+    --       'javascript',
+    --       'typescript',
+    --       'diff',
+    --       'html',
+    --       'lua',
+    --       'luadoc',
+    --       'query',
+    --       'vim',
+    --       'vimdoc',
+    --       'markdown',
+    --       'markdown_inline',
+    --       'css',
+    --       'latex',
+    --       'norg',
+    --       'scss',
+    --       'svelte',
+    --       'tsx',
+    --       'typst',
+    --       'vue',
+    --       'c_sharp',
+    --     },
+    --     auto_install = true,
+    --     highlight = {
+    --       enable = true,
+    --       -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+    --       --  If you are experiencing weird indenting issues, add the language to
+    --       --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+    --       additional_vim_regex_highlighting = { 'ruby' },
+    --     },
+    --     indent = { enable = true, disable = { 'ruby' } },
+    --   }
+    -- end,
+    --
+    -- vim.treesitter.language.register('c_sharp', 'cs'),
   },
 }
 

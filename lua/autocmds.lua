@@ -40,12 +40,14 @@ vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup('markdown.fold', {}),
   pattern = 'markdown',
   callback = function()
-    local o = vim.o
-    local opt = vim.opt
-    o.foldmethod = 'expr' -- Define folds using an expression
-    o.foldlevel = 99 -- Open all folds by default upon opening a file
-    opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- Use Treesitter for folding
-    opt.foldtext = '' -- Syntax highlight first line of fold
+    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    vim.wo[0][0].foldmethod = 'expr'
+    -- local o = vim.o
+    -- local opt = vim.opt
+    -- o.foldmethod = 'expr' -- Define folds using an expression
+    -- o.foldlevel = 99 -- Open all folds by default upon opening a file
+    -- opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- Use Treesitter for folding
+    -- opt.foldtext = '' -- Syntax highlight first line of fold
   end,
 })
 
